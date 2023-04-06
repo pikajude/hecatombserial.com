@@ -57,6 +57,17 @@
       mode: '0644'
     notify: restart nginx
 
+  - ufw:
+      rule: limit
+      port: ssh
+      proto: tcp
+  - ufw:
+      rule: allow
+      port: http
+  - ufw:
+      rule: allow
+      port: https
+
   handlers:
     - name: restart nginx
       service:
