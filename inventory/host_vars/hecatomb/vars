@@ -1,4 +1,5 @@
 ---
+# vi: set ft=yaml:
 domain_name: hecatombserial.com
 acme_challenge_type: http-01
 acme_directory: https://acme-v02.api.letsencrypt.org/directory
