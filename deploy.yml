@@ -1,0 +1,55 @@
+---
+- name: install
+  hosts: hecatomb
+  roles: 
+    - ansible-php-fpm
+    - ansible-msmtp-mailer
+
+  tasks:
+  - name: install packages
+    apt:
+      name:
+        - nginx
+        - default-mysql-server
+      state: latest
+
+  - file:
+      path: /var/www/{{ domain_name }}
+      owner: www-data
+      group: www-data
+      state: directory
+  
+  - unarchive:
+      src: https://wordpress.org/latest.tar.gz
+      dest: /var/www/{{ domain_name }}
+      creates: /var/www/{{ domain_name }}/wordpress
+      remote_src: yes
+      owner: www-data
+      group: www-data
+
+  - name: services
+    service:
+      name: mysqld
+      state: started
+
+  - file:
+      path: /etc/nginx/sites-enabled/default
+      state: absent
+    notify: restart nginx
+
+  - copy:
+      src: nginx-cache.conf
+      dest: /etc/nginx/conf.d/cache.conf
+    notify: restart nginx
+
+  - template:
+      src: site.cnf.j2
+      dest: /etc/nginx/sites-enabled/{{ domain_name }}
+      mode: '0644'
+    notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted

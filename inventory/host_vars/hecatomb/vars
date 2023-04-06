@@ -1,0 +1,31 @@
+---
+domain_name: hecatombserial.com
+acme_challenge_type: http-01
+acme_directory: https://acme-v02.api.letsencrypt.org/directory
+acme_version: 2
+acme_email: certificate-reminders@hecatombserial.com
+letsencrypt_dir: /var/lib/letsencrypt
+letsencrypt_keys_dir: /var/lib/letsencrypt/keys
+letsencrypt_csrs_dir: /var/lib/letsencrypt/csrs
+letsencrypt_certs_dir: /var/lib/letsencrypt/certs
+letsencrypt_account_key: /var/lib/letsencrypt/account/account.key
+php_version: 7.4
+php_modules:
+  - mysql
+  - curl
+  - dom
+  - imagick
+  - mbstring
+  - zip
+  - gd
+  - intl
+php_fpm_pools:
+  - name: hecatomb
+    pm_max_children: 10
+    pm_start_server: 4
+    pm_min_spare_servers: 2
+    pm_max_spare_servers: 6
+php_fpm_ini_options:
+  - {option: post_max_size, value: 100M}
+  - {option: upload_max_filesize, value: 100M}
+  - {section: opcache, option: opcache.enable, value: 1}
