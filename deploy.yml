@@ -6,12 +6,15 @@
     - ansible-msmtp-mailer
 
   tasks:
-  - name: install packages
+  - name: install apt packages
     apt:
       name:
         - nginx
         - default-mysql-server
       state: latest
+  - name: install python packages
+    pip:
+      name: pymysql
 
   - file:
       path: /var/www/{{ domain_name }}
@@ -27,10 +30,16 @@
       owner: www-data
       group: www-data
 
-  - name: services
-    service:
+  - service:
       name: mysqld
       state: started
+
+  - mysql_user:
+      name: wordpress
+      host: localhost
+      priv: 'wordpress.*:ALL'
+      state: present
+      login_unix_socket: /var/run/mysqld/mysqld.sock
 
   - file:
       path: /etc/nginx/sites-enabled/default
